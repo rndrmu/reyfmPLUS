@@ -1,15 +1,12 @@
 {
-  "name": "reyfmPLUS",
+  "name": "reyfm-plus",
   "homepage": "https://github.com",
   "version": "1.0.0",
   "description": "ReyFM++",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "compile": "tsc --build tsconfig.json",
-    "minify": "swc build src -d dist",
-    "bundle": "spack",
-    "intoProd": "pnpm run compile && pnpm run bundle"
+    "compile": "node build/build.mjs"
   },
   "keywords": [],
   "author": "",

@@ -1,22 +1,38 @@
 import { awaitElementVisible, chipCreator, openInSpotify, reyfmPlusMeta, destroyOriginalStream } from "./utils";
 import { playStateObserver, pathObserver, newPath } from "./observers";
-window.rfmPlusState = {
-    bassBoostActive: false,
-    bassBoostLevel: 0,
-    audioContext: undefined,
-    audioPlayer: undefined,
-};
-
+import { defaultState } from "./consts";
+import Logger from "@utils/Logger";
+import { plugins } from "plugins";
+import observers from "@utils/observers";
 
 // await for the page to load
 awaitElementVisible("div[data-v-733b83fc] > a > svg", (_) => {
-    console.info("[REYFMPLUS] Hello from ReyfmPlus!");
     main();
 });
 
 function main() {
-    console.log("[REYFMPLUS] Starting main script");
-    console.log("[REYFMPLUS] Current state: " + window.__NUXT__);
+    const logger = new Logger("Loader");
+    logger.info("Hello from ReyfmPlus!");
+
+    // load observers
+    observers.forEach((observer) => {
+        if (observer.enabled) {
+            logger.info(`Loading observer: ${observer.name}`);
+            observer.associatedFn();
+        }
+    })
+
+    // load plugins 
+    plugins.forEach((plugin) => {
+        if (plugin.enabled) {
+            logger.info(`Loading plugin: ${plugin.name}`);
+            
+        }
+    });
+    
+    
+    // set global state
+    window.rfmPlus = window.rfmPlus || defaultState;
     // add metadata footer so we know the script is running
     reyfmPlusMeta();
     // call immediately in case user is on a station page
@@ -62,7 +78,7 @@ function main() {
 
 export function bassBoostMenu() {
     // kill the original stream if it is still running
-    window.__NUXT__.state.player.audio ? destroyOriginalStream(window.rfmPlusState.audioPlayer) : null;
+    window.__NUXT__.state.player.audio ? destroyOriginalStream(window.rfmPlus.state.audioPlayer) : null;
 
     const stationName = location.pathname.split("/")[2];
     const stationId = stationMapReverse[stationName];
@@ -222,8 +238,8 @@ function bassBoost(streamLink = "https://listen.reyfm.de/original_320kbps.mp3", 
     window.__NUXT__.state.player.audio ? destroyOriginalStream(audioElement) : null;
 
     // save in our state
-    window.rfmPlusState.audioPlayer = audioElement;
-    window.rfmPlusState.audioContext = audioCtx;
+    window.rfmPlus.state.audioPlayer = audioElement;
+    window.rfmPlus.state.audioContext = audioCtx;
 
     window.__NUXT__.state.player.audio = audioElement;
 

@@ -25,7 +25,10 @@ const commonOpts = {
     minify: true,
     sourcemap: false,
     legalComments: "linked",
-    tsconfig: "./tsconfig.json"
+    tsconfig: "./tsconfig.json",
+    banner: {
+        js: banner,
+    },
 };
 
 
@@ -42,11 +45,5 @@ const browserCommonOpts = {
 await esbuild.build({
     ...browserCommonOpts,
     entryPoints: ["./src/index.ts"],
-    outfile: "./dist/final/reyfm.user.js",
+    outfile: "./dist/reyfm.user.js",
 })
-
-
-// add banner to minified file
-
-const minified = fs.readFileSync("./dist/final/reyfm.user.js", "utf8");
-fs.writeFileSync("./dist/final/reyfm.user.js", banner + "\n" + minified);

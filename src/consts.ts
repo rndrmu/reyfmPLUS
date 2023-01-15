@@ -1,141 +1,80 @@
+import { playStream } from "./api";
+import { destroyOriginalStream } from "./utils";
+import { rfmPlusState, WebpackedNuxt, stationMap, Station, StreamQuality, RfmChannel, RfmChannels } from "@utils/types";
 // overwrite window object
 export const a = 1;
 
 declare global {
     interface Window {
-        rfmPlusState: rfmPlusState;
+        rfmPlus: {
+            state: rfmPlusState;
+            api: APIFunctions;
+        },
+        // just for typing, not used in production
         __NUXT__: WebpackedNuxt;
+
     }
 };
 
-type rfmPlusState = {
-    bassBoostActive: boolean,
-    bassBoostLevel: number,
-    audioContext?: AudioContext,
-    audioPlayer?: HTMLAudioElement,
+// default global state
+type rfmPlus = {
+    state: rfmPlusState;
+    api: APIFunctions;
 };
 
-type WebpackedNuxt = {
-    config: any
-    data: any
-    error?: any
-    fetch: any
-    layout: string
-    routePath: string
-    serverRendered: true,
-    state: NuxtState
-}
-
-type NuxtState = {
-    __ob__: any
-    main: MainState,
-    player: PlayerState,
-}
-
-type MainState = {
-    __ob__: any,
-    currentStation: string,
-    data: RfmApiData,
-};
-
-type PlayerState = {
-    audio: HTMLAudioElement,
-    currentStation: Station,
-    loading?: boolean,
-    playing: boolean,
-    volume: number,
-    quality: PlayerQuality,
-}
-
-type PlayerQuality = {
-    __ob__: any,
-    name: string,
-    value: number,
-}
-
-enum Station {
-    original = 1,
-    nightlife = 2,
-    raproyal = 3,
-    usrap = 4,
-    hitsonly = 5,
-    gaming = 6,
-    houseparty = 7,
-    chillout = 8,
-    lofi = 9,
-    oldschool = 10,
-    mashup = 11,
-    charts = 12,
-    partyhard = 13,
-    bass = 14,
-    kpop = 15,
-    xmas = 20, // seasonal
-}
-
-type RfmApiData = {
-    __ob__: any,
-    all_listeners: number,
-    channels: RfmChannels,
-    sequence: Array<string>,
-    weather: Array<any>,
-}
-
-type RfmChannels = {
-    [key: number]: RfmChannel,
-}
-
-type RfmChannel = {
-    __ob__: any,
-    color: string,
-    description: string,
-    history: RfmChannelDetails,
-    id: string,
-    last_updated: Date,
-    listeners: number,
-    live: boolean,
-    name: string,
-    next: RfmChannelDetails,
-    now: RfmChannelDetails,
-    stream_urls: RfmChannelStreamUrls,
-}
-
-type RfmChannelDetails = {
-    [key: number]: RfmChannelDetailsItem,
-}
-
-type RfmChannelDetailsItem = {
-    __ob__: any,
-    artist: string,
-    cover_urls: RfmChannelCoverUrls,
-    id: string,
-    info: {
-        __ob__: any,
-        duration: string,
-        genre: string,
-        last_played: Date,
+export const defaultState: rfmPlus = {
+    state: {
+        bassBoostActive: false,
+        bassBoostLevel: 0,
     },
-    played_at: string,
-    preview: string,
-    time: RfmPlayerTime,
-    title: string,
+    api: {
+        getStation: async (station: string) => {
+            const stations = await window.rfmPlus.api.getStations();
+            return stationMap[station];
+        },
+
+        getStations: async () => {
+            //return window.__NUXT__.state.main.data.channels;
+            return new Promise((resolve, reject) => {
+                const stations = window.__NUXT__.state.main.data.channels;
+                if (stations) {
+                    resolve(stations);
+                } else {
+                    reject("Could not get stations");
+                }
+            });
+        },
+
+        playBoosted: async (station: Station, quality: StreamQuality): Promise<void> => {
+            // kill the original stream if it is still running
+            window.__NUXT__.state.player.audio ? destroyOriginalStream(window.rfmPlus.state.audioPlayer) : null;
+
+            // set the bass boost to active
+            window.rfmPlus.state.bassBoostActive = true;
+
+            // play the boosted stream
+            playStream(station, quality);
+        },
+
+        playOriginal: async (station: Station, quality: StreamQuality): Promise<void> => {
+            // kill the original stream if it is still running
+            window.__NUXT__.state.player.audio ? destroyOriginalStream(window.rfmPlus.state.audioPlayer) : null;
+
+            // set the bass boost to inactive
+            window.rfmPlus.state.bassBoostActive = false;
+
+            // play the boosted stream
+            playStream(station, quality);
+        }
+    }
 }
 
-type RfmPlayerTime = {
-    __ob__: any,
-    end: boolean | string, 
-    start: boolean | string,
-}
-
-type RfmChannelCoverUrls = {
-    "500x500": string
-    "240x240": string,
-    "120x120": string
+export interface APIFunctions {
+    getStation: (station: string) => Promise<RfmChannel>;
+    getStations: () => Promise<RfmChannels>;
+    playBoosted: (station: Station, quality: StreamQuality) => Promise<void>;
+    playOriginal: (station: Station, quality: StreamQuality) => Promise<void>;
 }
 
 
-type RfmChannelStreamUrls = {
-    high: string,
-    mid: string,
-    low: string,
-    mobile: string,
-}
+

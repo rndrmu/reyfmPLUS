@@ -1,0 +1,176 @@
+export type rfmPlusState = {
+    bassBoostActive: boolean,
+    bassBoostLevel: number,
+    audioContext?: AudioContext,
+    audioPlayer?: HTMLAudioElement,
+};
+
+export type WebpackedNuxt = {
+    config: any
+    data: any
+    error?: any
+    fetch: any
+    layout: string
+    routePath: string
+    serverRendered: true,
+    state: NuxtState
+}
+
+export type NuxtState = {
+    __ob__: any
+    main: MainState,
+    player: PlayerState,
+}
+
+export type MainState = {
+    __ob__: any,
+    currentStation: string,
+    data: RfmApiData,
+};
+
+export type PlayerState = {
+    audio: HTMLAudioElement,
+    currentStation: Station,
+    loading?: boolean,
+    playing: boolean,
+    volume: number,
+    quality: PlayerQuality,
+}
+
+export type PlayerQuality = {
+    __ob__: any,
+    name: string,
+    value: number,
+}
+
+export enum Station {
+    original = 1,
+    nightlife = 2,
+    raproyal = 3,
+    usrap = 4,
+    hitsonly = 5,
+    gaming = 6,
+    houseparty = 7,
+    chillout = 8,
+    lofi = 9,
+    oldschool = 10,
+    mashup = 11,
+    charts = 12,
+    partyhard = 13,
+    bass = 14,
+    kpop = 15,
+    xmas = 20, // seasonal
+}
+
+export type RfmApiData = {
+    __ob__: any,
+    all_listeners: number,
+    channels: RfmChannels,
+    sequence: Array<string>,
+    weather: Array<any>,
+}
+
+export type RfmChannels = {
+    [key: number]: RfmChannel,
+}
+
+export type RfmChannel = {
+    __ob__: any,
+    color: string,
+    description: string,
+    history: RfmChannelDetails,
+    id: string,
+    last_updated: Date,
+    listeners: number,
+    live: boolean,
+    name: string,
+    next: RfmChannelDetails,
+    now: RfmChannelDetails,
+    stream_urls: RfmChannelStreamUrls,
+}
+
+export type RfmChannelDetails = {
+    [key: number]: RfmChannelDetailsItem,
+}
+
+export type RfmChannelDetailsItem = {
+    __ob__: any,
+    artist: string,
+    cover_urls: RfmChannelCoverUrls,
+    id: string,
+    info: {
+        __ob__: any,
+        duration: string,
+        genre: string,
+        last_played: Date,
+    },
+    played_at: string,
+    preview: string,
+    time: RfmPlayerTime,
+    title: string,
+}
+
+export type RfmPlayerTime = {
+    __ob__: any,
+    end: boolean | string, 
+    start: boolean | string,
+}
+
+export type RfmChannelCoverUrls = {
+    "500x500": string
+    "240x240": string,
+    "120x120": string
+}
+
+
+export type RfmChannelStreamUrls = {
+    high: string,
+    mid: string,
+    low: string,
+    mobile: string,
+}
+
+export enum StreamQuality {
+    high = "320kbps",
+    mid = "192kbps",
+    low = "128kbps",
+    mobile = "64kbps",
+}
+
+export const stationMap = {
+    original: 1,
+    nightlife: 2,
+    raproyal: 3,
+    usrap: 4,
+    hitsonly: 5,
+    gaming: 6,
+    houseparty: 7,
+    chillout: 8,
+    lofi: 9,
+    oldschool: 10,
+    mashup: 11,
+    charts: 12,
+    partyhard: 13,
+    bass: 14,
+    kpop: 15,
+    xmas: 20, // seasonal
+}
+
+export interface Plugin {
+    name: string;
+    enabled: boolean;
+    author: string;
+    version: string;
+    description: string;
+    entrypoint: Function;
+}
+
+export default function definePlugin<P extends Plugin>(p: P & Record<string, any>) {
+    return p;
+}
+
+export type Observer = {
+    name: string,
+    associatedFn: Function,
+    enabled: boolean,
+}
