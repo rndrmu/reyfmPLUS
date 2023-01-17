@@ -18,7 +18,11 @@ function main() {
     observers.forEach((observer) => {
         if (observer.enabled) {
             logger.info(`Loading observer: ${observer.name}`);
-            observer.associatedFn();
+            try {
+                observer.associatedFn();
+            } catch (e) {
+                logger.error(`Error while loading observer ${observer.name}: ${e}`);
+            }
         }
     })
 
@@ -26,7 +30,11 @@ function main() {
     plugins.forEach((plugin) => {
         if (plugin.enabled) {
             logger.info(`Loading plugin: ${plugin.name}`);
-            plugin.entrypoint();
+            try {
+                plugin.entrypoint();
+            } catch (e) {
+                logger.error(`Error while loading plugin ${plugin.name}: ${e}`);
+            }
         }
     });
     
