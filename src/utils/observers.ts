@@ -8,6 +8,7 @@
  */
 
 import Logger from "@utils/Logger";
+import { PLAY_BUTTON_SELECTOR } from "@utils/consts";
 import { Observer } from "./types";
 const logger = new Logger("Observer");
 
@@ -24,14 +25,9 @@ const pathObserver = () => {
 
 const playButtonClicked = () => {
     // path: "div.inset-center > div.buttonShine"
-    new MutationObserver((mutations, observer) => {
-        const playButton = document.querySelector("div.inset-center > div.buttonShine");
-        if (playButton) {
-            playButton.addEventListener("click", () => {
-                clickedPB();
-            });
-        }
-    }).observe(document, { childList: true, subtree: true });
+    document.querySelector(PLAY_BUTTON_SELECTOR).addEventListener("click", () => {
+        clickedPB();
+    });
 };
 
 /**
@@ -46,7 +42,20 @@ const newPath = (pathName) => {
  * Function that is called when the user clicks the play button.
  */
 const clickedPB = () => {
-    logger.log("Play button clicked");
+    const sitePlayer = window.__NUXT__.state.player.audio;
+    const rfmPlusPlayer = window.rfmPlus.state.audioPlayer;
+    if (sitePlayer && rfmPlusPlayer) {
+        // player is paused
+        logger.log("Resuming");
+        window.__NUXT__.state.player.audio = rfmPlusPlayer;
+        window.__NUXT__.state.player.playing = true;
+    } else if (!sitePlayer && rfmPlusPlayer) {
+        logger.log("Pausing");
+        sitePlayer?.pause();
+        window.__NUXT__.state.player.audio = null;
+        window.__NUXT__.state.player.playing = false;
+        rfmPlusPlayer.pause(); // for safety's sake
+    }
 }
 
 export default <Observer[]>[

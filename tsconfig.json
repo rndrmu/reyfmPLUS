@@ -8,6 +8,7 @@
         "paths": {
             "@utils/*": ["./utils/*"],
             "@api/*": ["./api/*"],
+            "@webpack": ["./webpack/*"],
         }
     },
 }

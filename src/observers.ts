@@ -3,24 +3,11 @@ import { awaitElementVisible, chipCreator, destroyOriginalStream } from "./utils
 
 
 export function playStateObserver(audio) {       
-    new MutationObserver((mutations, observer) => {
 
-        const isPlaying = window.__NUXT__.state.player.playing;
-        if (isPlaying) {
-            window.__NUXT__.state.player.audio ? destroyOriginalStream(window.rfmPlus.state.audioPlayer) : null;
-            // set volume 
-            audio.volume = window.__NUXT__.state.player.volume / 100;
-        } else {
-            window.__NUXT__.state.player.audio ? destroyOriginalStream(audio) : null;
-            window.__NUXT__.state.player.audio = null;
-            window.rfmPlus.state.audioPlayer?.pause();
-            window.__NUXT__.state.player.audio?.pause()
-            // for safety's sake :^)
-            audio.volume = window.__NUXT__.state.player.volume / 100;
-
-        }
-
-    }).observe(document, { childList: true, subtree: true });
+    destroyOriginalStream(window.__NUXT__.state.player.audio);
+    window.__NUXT__.state.player.audio = audio;
+    window.__NUXT__.state.player.playing = true;
+    window.__NUXT__.state.player.audio.play();
 
 }
 

@@ -26,7 +26,7 @@ function main() {
     plugins.forEach((plugin) => {
         if (plugin.enabled) {
             logger.info(`Loading plugin: ${plugin.name}`);
-            
+            plugin.entrypoint();
         }
     });
     
@@ -244,6 +244,6 @@ function bassBoost(streamLink = "https://listen.reyfm.de/original_320kbps.mp3", 
     window.__NUXT__.state.player.audio = audioElement;
 
     // play audio
-    playStateObserver(audioElement);
+   playStateObserver(audioElement);
 
 }

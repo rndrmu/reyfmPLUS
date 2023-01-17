@@ -11,6 +11,7 @@ import { APIFunctions } from "consts";
 const api: APIFunctions = {
     getStation: async (station: string) => {
         const stations = await api.getStations();
+        const stationMap = stations
         return stationMap[station];
     },
 
@@ -59,11 +60,8 @@ export function playStream(station: Station, quality: StreamQuality) {
     window.__NUXT__.state.player.currentStation = station;
 
     // set the audio source
-    audio.src = `https://stream.reyfm.de/${station}/${quality}.mp3`;
+    audio.src = `https://listen.reyfm.de/${station}_${quality}kbps.mp3`;
 
     // play the stream
     audio.play();
-
-    // observe the play state
-    playStateObserver(audio);
 }
