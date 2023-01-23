@@ -37,7 +37,9 @@ function main() {
             }
         }
     });
-    
+
+    // add plugin to state 
+    defaultState.plugins = plugins;    
     
     // set global state
     window.rfmPlus = window.rfmPlus || defaultState;

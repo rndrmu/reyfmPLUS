@@ -58,5 +58,14 @@ export default definePlugin({
                 }
             }));
         }, 30000);
+    },
+    htmlHook: () => {
+        const navIcon = document.querySelector("svg.h-10.w-auto.text-white");
+        // icon green = socket connected
+        // icon red = socket disconnected or user not logged in
+        // icon yellow = socket connecting
+        // icon gray = socket not enabled
+        navIcon.attributes.style = "fill: #00ff00 !important; color: #00ff00 !important";
+        
     }
 })

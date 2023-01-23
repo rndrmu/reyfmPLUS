@@ -1,6 +1,6 @@
 import { playStream } from "./api";
 import { destroyOriginalStream } from "./utils";
-import { rfmPlusState, WebpackedNuxt, stationMap, Station, StreamQuality, RfmChannel, RfmChannels } from "@utils/types";
+import { rfmPlusState, WebpackedNuxt, stationMap, Station, StreamQuality, RfmChannel, RfmChannels, Plugin } from "@utils/types";
 // overwrite window object
 export const a = 1;
 
@@ -9,6 +9,7 @@ declare global {
         rfmPlus: {
             state: rfmPlusState;
             api: APIFunctions;
+            plugins: Map<string, Plugin>;
         },
         // just for typing, not used in production
         __NUXT__: WebpackedNuxt;
@@ -20,6 +21,7 @@ declare global {
 type rfmPlus = {
     state: rfmPlusState;
     api: APIFunctions;
+    plugins: Map<string, Plugin>;
 };
 
 export const defaultState: rfmPlus = {
@@ -66,7 +68,8 @@ export const defaultState: rfmPlus = {
             // play the boosted stream
             playStream(station, quality);
         }
-    }
+    },
+    plugins: new Map<string, Plugin>(),
 }
 
 export interface APIFunctions {
