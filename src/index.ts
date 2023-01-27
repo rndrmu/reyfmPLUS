@@ -31,6 +31,18 @@ function main() {
         if (plugin.enabled) {
             logger.info(`Loading plugin: ${plugin.name}`);
             try {
+                // check if plugin has a dependent element
+                if (plugin.awaitElementVisible) {
+                    // check if element is visible
+                    const isVisible = document.querySelector(plugin.awaitElementVisible);
+                    if (!isVisible) {
+                        logger.info(`Plugin ${plugin.name} has a dependent element ${plugin.awaitElementVisible} which has not been loaded yet. Waiting for it to load...`);
+                        awaitElementVisible(plugin.awaitElementVisible, plugin.entrypoint);
+                    } else {
+                        logger.info(`Plugin ${plugin.name} has a dependent element ${plugin.awaitElementVisible} which has already been loaded. Loading plugin...`);
+                        plugin.entrypoint();
+                    }
+                }
                 plugin.entrypoint();
             } catch (e) {
                 logger.error(`Error while loading plugin ${plugin.name}: ${e}`);

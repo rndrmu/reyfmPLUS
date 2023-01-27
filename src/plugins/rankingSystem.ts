@@ -1,8 +1,9 @@
 // establish socket connection
+import { showNotification } from "@api/notification";
 import Logger from "@utils/Logger";
 import definePlugin from "@utils/types";
 
-const logger = new Logger("Socket");
+const logger = new Logger("Plugins/RankingSystem");
 
 
 export default definePlugin({
@@ -11,11 +12,13 @@ export default definePlugin({
     author: "built-in",
     version: "1.0.0",
     description: "Adds a ranking system to the player",
+    awaitElementVisible: null, // no dependent elements
     entrypoint: () => {
         const socket = new WebSocket("ws://localhost:8080");
 
         socket.addEventListener("open", () => {
             logger.info("Socket connection established");
+            showNotification("Socket connection established", "Socket connection established", false)
         });
 
         socket.addEventListener("message", (event) => {
@@ -25,12 +28,14 @@ export default definePlugin({
 
         socket.addEventListener("close", (e) => {
             logger.info("Socket connection closed. Code: %s, Reason: %s", e.code, e.reason);
+            showNotification("Socket connection closed", "WebSocket connection terminated", false)
             clearInterval(hb);
             clearInterval(psu);
         });
 
         socket.addEventListener("error", (error) => {
             logger.error(error);
+            showNotification ("Socket connection error", "WebSocket connection error", false)
             
         });
 
@@ -58,14 +63,5 @@ export default definePlugin({
                 }
             }));
         }, 30000);
-    },
-    htmlHook: () => {
-        const navIcon = document.querySelector("svg.h-10.w-auto.text-white");
-        // icon green = socket connected
-        // icon red = socket disconnected or user not logged in
-        // icon yellow = socket connecting
-        // icon gray = socket not enabled
-        navIcon.attributes.style = "fill: #00ff00 !important; color: #00ff00 !important";
-        
     }
 })

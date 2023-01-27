@@ -10,6 +10,7 @@
 import Logger from "@utils/Logger";
 import { PLAY_BUTTON_SELECTOR } from "@utils/consts";
 import { Observer } from "./types";
+import { awaitElementVisible } from "utils";
 const logger = new Logger("Observer");
 
 const pathObserver = () => {
@@ -36,6 +37,17 @@ const playButtonClicked = () => {
 const newPath = (pathName) => {
     // check if the new path is the one we want
     logger.log("New path: " + pathName);
+    // get plugins
+    if (!pathName.startsWith("/station/")) return;
+    const plugins = window.rfmPlus.plugins;
+    for (const [pName, pFn] of plugins) {
+        if (pFn.injectTarget) {
+            // check if the element is visible
+            awaitElementVisible(pFn.injectTarget, () => {
+                pFn.entrypoint();
+            });
+        }
+    }
 }
 
 /**

@@ -157,14 +157,66 @@ export const stationMap = {
 }
 
 export interface Plugin {
+    /** The name of the plugin. */
     name: string;
+    /** Whether the plugin is enabled. */
     enabled: boolean;
+    /** 
+     * The author of the plugin. 
+     * @example
+     * author: "John Doe"
+     */
     author: string;
+    /** 
+     * The version of the plugin. Should be 1.0.0 on release 
+     * @example
+     * version: "1.0.0"
+     * */
     version: string;
+    /**
+     *  A short description of the plugin. 
+     * @example
+     * description: "A simple plugin that logs 'Hello world!' to the console"
+     * */
     description: string;
+    /** 
+     * The plugin's entrypoint function. 
+     * @example
+     * // A simple plugin that logs "Hello world!" to the console
+     * entrypoint: () => console.log("Hello world!")
+     * */
     entrypoint: Function;
+    /** 
+     * If the plugin should only be loaded on a certain page, specify the path here. Regex to be able to have it fine-tuned. 
+     * @example
+     * // Only load on the home page
+     * pathConstraint: /^\/$/
+     * */
+    pathConstraint?: RegExp;
+    /**
+     * Constraint to limit injection if certain elements are present.
+     * Can be used to prevent injection on certain pages, but for that case it's better to use pathConstraint.
+     * @example
+     * // Inject only if the element with id "my-element" is present
+     * injectConstraint: "#my-element"
+     */
+    injectTarget?: string;
 }
 
+/**
+ * 
+ * Plugin definition function.
+ * @example Example plugin
+ * export default definePlugin({
+ *    name: "Example Plugin",
+ *   enabled: true,
+ * author: "John Doe",
+ * description: "A simple plugin that logs 'Hello world!' to the console",
+ * version: "1.0.0",
+ * entrypoint: () => console.log("Hello world!"),
+ * pathConstraint: /^\/$/
+ * })
+ */
 export default function definePlugin<P extends Plugin>(p: P & Record<string, any>) {
     return p;
 }
