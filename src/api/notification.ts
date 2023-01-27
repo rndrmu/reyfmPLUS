@@ -1,4 +1,4 @@
-export const showNotification = (title, message, persistent = false) => {
+export const showNotification = (title, message, persistent = false): HTMLDivElement => {
     // get body
     const body = document.querySelector("body");
     // create notification
@@ -114,9 +114,11 @@ export const showNotification = (title, message, persistent = false) => {
             notification.style.top = `${notificationPosition.top - 65}px`;
         });
     });
+
+    return notification;
 }
 
-export const showToast = (message) => {
+export const showToast = (message): HTMLDivElement => {
     // same as showNotification, but without a title and bottom aligned full width
     const body = document.querySelector("body");
     const notification = document.createElement("div");
@@ -195,4 +197,6 @@ export const showToast = (message) => {
             notification.remove();
         }, 500);
     });
+
+    return notification;
 }
