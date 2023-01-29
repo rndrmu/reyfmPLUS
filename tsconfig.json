@@ -1,6 +1,6 @@
 {
     "compilerOptions": {
-        "lib": ["es5", "es6", "dom"],
+        "lib": ["es5", "es6", "dom", "ES2016"],
         "target": "ESNext",
         "rootDir": "./src/",
         "outDir": "./dist/pre/",

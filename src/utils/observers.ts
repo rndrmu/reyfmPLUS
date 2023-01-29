@@ -38,17 +38,26 @@ const newPath = (pathName) => {
     // check if the new path is the one we want
     logger.log("New path: " + pathName);
     // get plugins
-    if (!pathName.startsWith("/station/")) return;
     const plugins = window.rfmPlus.plugins;
-    for (const [pName, pFn] of plugins) {
-        if (pFn.injectTarget) {
-            // check if the element is visible
-            awaitElementVisible(pFn.injectTarget, () => {
-                pFn.entrypoint();
-            });
+    // check if plugin has a path constraint
+    for (const [, plugin] of plugins) {
+        if (plugin.pathConstraint) {
+            // check if the path matches the path constraint
+            if (pathName.match(plugin.pathConstraint)) {
+                // path matches, so we can enable the plugin
+                logger.log("Enabling plugin: " + plugin.name);
+                if (plugin.injectTarget) {
+                        // check if the element is visible
+                        logger.log("Waiting for element to be visible");
+                        awaitElementVisible(plugin.injectTarget, () => {
+                            plugin.entrypoint();
+                        });
+                    }
+                }
+            } 
         }
     }
-}
+
 
 /**
  * Function that is called when the user clicks the play button.
@@ -83,3 +92,41 @@ export default <Observer[]>[
     }
 ]
 
+/**
+ * Pub/Sub Style Observer API for the application.
+ * Listens for changes in the DOM and reacts to them.
+ */
+export class ObserverManager {
+    private observers: Observer[] = [];
+    constructor(observers: Observer[]) {
+        this.observers = observers;
+    }
+
+    public enableObserver(name: string) {
+        const observer = this.observers.find(o => o.name === name);
+        if (!observer) throw new Error(`Observer ${name} not found`);
+        observer.enabled = true;
+    }
+
+    public disableObserver(name: string) {
+        const observer = this.observers.find(o => o.name === name);
+        if (!observer) throw new Error(`Observer ${name} not found`);
+        observer.enabled = false;
+    }
+
+    public init() {
+        this.observers.forEach(o => {
+            if (o.enabled) o.associatedFn();
+        });
+    }
+
+    public emit(name: string) {
+
+    }
+
+    public on(name: string, fn: (...args: any[]) => void) {
+        const observer = this.observers.find(o => o.name === name);
+        if (!observer) throw new Error(`Observer ${name} not found`);
+        observer.associatedFn = fn;
+    }
+}

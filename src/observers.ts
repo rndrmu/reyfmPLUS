@@ -1,4 +1,3 @@
-import { showNotification } from "@api/notification";
 import { bassBoostMenu } from "./index";
 import { awaitElementVisible, chipCreator, destroyOriginalStream } from "./utils";
 
@@ -45,7 +44,6 @@ export function newPath(pathName) {
 
                 const bassBoostActiveChip = chipCreator(element, "Bass Boost Active (Lvl: " + window.rfmPlus.state.bassBoostLevel + ")", "#ff0000", true, () => {
                     console.log("clicked boost active chip");
-                    showNotification("Bass Boost", "Bass boost is already active. Click the Bass Boost Menu chip to change the level.")
                 });
                 chipBar.appendChild(bassBoostActiveChip);
             }

@@ -1,4 +1,13 @@
-export const showNotification = (title, message, persistent = false): HTMLDivElement => {
+export enum LogLevel {
+    INFO = "info",
+    WARNING = "warning",
+    ERROR = "error",
+    SUCCESS = "success",
+    DEBUG = "debug"
+}
+
+
+export const showNotification = (title, message, persistent = false, logLevel: LogLevel = LogLevel.INFO): HTMLDivElement => {
     // get body
     const body = document.querySelector("body");
     // create notification
@@ -27,7 +36,8 @@ export const showNotification = (title, message, persistent = false): HTMLDivEle
     
     notification.style.padding = "0.5rem";
     // glassmorphism style
-    notification.style.backgroundColor = "rgba(22, 24, 25, 0.8)";
+    // bg color, red for error, blue for info, green for success, yellow for warning, white for debug
+    notification.style.backgroundColor = logLevel === LogLevel.ERROR ? "rgba(255, 0, 0, 0.2)" : logLevel === LogLevel.INFO ? "rgba(0, 0, 255, 0.2)" : logLevel === LogLevel.SUCCESS ? "rgba(0, 255, 0, 0.2)" : logLevel === LogLevel.WARNING ? "rgba(255, 255, 0, 0.2)" : logLevel === LogLevel.DEBUG ? "rgba(255, 255, 255, 0.2)" : "rgba(255, 255, 255, 0.2)";
     notification.style.backdropFilter = "blur(10px)";
     notification.style.borderRadius = "0.25rem";
     notification.style.color = "#fff";
@@ -77,10 +87,9 @@ export const showNotification = (title, message, persistent = false): HTMLDivEle
         ], {
             duration: 500,
             easing: "ease-in-out"
-        });
-        setTimeout(() => {
+        }).onfinish = () => {
             notification.remove();
-        }, 500);
+        }
     }, 5000);
 
     notification.addEventListener("click", () => {
@@ -91,10 +100,9 @@ export const showNotification = (title, message, persistent = false): HTMLDivEle
         ], {
             duration: 500,
             easing: "ease-in-out"
-        });
-        setTimeout(() => {
+        }).onfinish = () => {
             notification.remove();
-        }, 500);
+        }
         // get all notifications
         const notifications = document.querySelectorAll(".fmplus.notification");
         // get index of notification
@@ -179,10 +187,9 @@ export const showToast = (message): HTMLDivElement => {
         ], {
             duration: 500,
             easing: "ease-in-out"
-        });
-        setTimeout(() => {
+        }).onfinish = () => {
             notification.remove();
-        }, 500);
+        }
     }, 5000);
 
     notification.addEventListener("click", () => {
@@ -192,10 +199,27 @@ export const showToast = (message): HTMLDivElement => {
         ], {
             duration: 500,
             easing: "ease-in-out"
-        });
-        setTimeout(() => {
+        }).onfinish = () => {
             notification.remove();
-        }, 500);
+        }
+        // get all toasts
+        const toasts = document.querySelectorAll(".fmplus.toast");
+        // get index of toast
+        const index = Array.from(toasts).indexOf(notification);
+        // get all toasts after the clicked toast
+        const toastsAfter = Array.from(toasts).slice(index + 1);
+        // animate all toasts after the clicked toast
+        toastsAfter.forEach((toast) => {
+            const toastPosition = toast.getBoundingClientRect();
+            toast.animate([
+                { transform: `translateY(${toastPosition.top}px)` },
+                { transform: `translateY(${toastPosition.top + 65}px)` }
+            ], {
+                duration: 500,
+                easing: "ease-in-out"
+            });
+            toast.style.top = `${toastPosition.top + 65}px`;
+        });
     });
 
     return notification;
