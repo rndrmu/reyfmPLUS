@@ -36,8 +36,7 @@ export const showNotification = (title, message, persistent = false, logLevel: L
     
     notification.style.padding = "0.5rem";
     // glassmorphism style
-    // bg color, red for error, blue for info, green for success, yellow for warning, white for debug
-    notification.style.backgroundColor = logLevel === LogLevel.ERROR ? "rgba(255, 0, 0, 0.2)" : logLevel === LogLevel.INFO ? "rgba(0, 0, 255, 0.2)" : logLevel === LogLevel.SUCCESS ? "rgba(0, 255, 0, 0.2)" : logLevel === LogLevel.WARNING ? "rgba(255, 255, 0, 0.2)" : logLevel === LogLevel.DEBUG ? "rgba(255, 255, 255, 0.2)" : "rgba(255, 255, 255, 0.2)";
+    notification.style.backgroundColor = "rgba(255, 255, 255, 0.1)";
     notification.style.backdropFilter = "blur(10px)";
     notification.style.borderRadius = "0.25rem";
     notification.style.color = "#fff";

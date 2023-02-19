@@ -16,39 +16,51 @@ export default definePlugin({
         const bottomPlayerBar = document.querySelector("div.space-y-1[data-v-5946bf68]") ;
         const sleepTimerButton = document.createElement("button");
         sleepTimerButton.className = "fmplus sleep-timer-button";
-        sleepTimerButton.style.width = "100px";
-        sleepTimerButton.style.margin = "0.25rem";
-        sleepTimerButton.style.backgroundColor = "#1e1e1e";
-        sleepTimerButton.style.color = "#fff";
-        sleepTimerButton.style.border = "1px solid #1e1e1e";
-        sleepTimerButton.style.borderRadius = "0.25rem";
-        sleepTimerButton.style.padding = "0.25rem";
-        sleepTimerButton.style.fontSize = "12px";
-        sleepTimerButton.style.fontWeight = "bold";
-        sleepTimerButton.style.textAlign = "center";
-        sleepTimerButton.style.cursor = "pointer";
-        sleepTimerButton.style.lineHeight = "1.5";
+
+        const styles: Partial<CSSStyleDeclaration> = {
+            width: "100px",
+            margin: "0.25rem",
+            backgroundColor: "#1e1e1e",
+            color: "#fff",
+            border: "1px solid #1e1e1e",
+            borderRadius: "0.25rem",
+            padding: "0.25rem",
+            fontSize: "12px",
+            fontWeight: "bold",
+            textAlign: "center",
+            cursor: "pointer",
+            lineHeight: "1.5",
+        }
+
+        Object.assign(sleepTimerButton.style, styles);
+
         sleepTimerButton.innerHTML = "Sleep Timer";
         sleepTimerButton.addEventListener("click", () => {
             // show selection menu for sleep timer duration
             const sleepTimerMenu = document.createElement("div");
             sleepTimerMenu.className = "fmplus sleep-timer-menu";
-            sleepTimerMenu.style.backgroundColor = "rgba(255, 255, 255, 0.2)";
-            sleepTimerMenu.style.backdropFilter = "blur(10px)";
-            sleepTimerMenu.style.border = "1px solid rgba(255, 255, 255, 0.3)";
-            sleepTimerMenu.style.zIndex = "9999";
-            sleepTimerMenu.style.display = "flex";
-            sleepTimerMenu.style.justifyContent = "center";
-            sleepTimerMenu.style.alignItems = "center";
-            sleepTimerMenu.style.flexDirection = "column";
-            sleepTimerMenu.style.padding = "1rem";
-            sleepTimerMenu.style.boxSizing = "border-box";
-            sleepTimerMenu.style.cursor = "pointer";
-            // center menu on screen
-            sleepTimerMenu.style.position = "fixed";
-            sleepTimerMenu.style.top = "50%";
-            sleepTimerMenu.style.left = "50%";
-            sleepTimerMenu.style.transform = "translate(-50%, -50%)";
+    
+
+            const styles: Partial<CSSStyleDeclaration> = {
+                backgroundColor: "rgba(255, 255, 255, 0.2)",
+                backdropFilter: "blur(10px)",
+                border: "1px solid rgba(255, 255, 255, 0.3)",
+                zIndex: "9999",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                flexDirection: "column",
+                padding: "1rem",
+                boxSizing: "border-box",
+                cursor: "pointer",
+                position: "fixed",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+            }
+
+            Object.assign(sleepTimerMenu.style, styles);
+
             sleepTimerMenu.addEventListener("click", (e) => {
                 e.stopPropagation();
                 // if clicked outside of menu, close menu
@@ -72,19 +84,24 @@ export default definePlugin({
             sleepTimerMenuOptions.forEach((option) => {
                 const sleepTimerMenuOption = document.createElement("button");
                 // glassmorphism effect
-                sleepTimerMenuOption.style.backgroundColor = "rgba(255, 255, 255, 0.2)";
-                sleepTimerMenuOption.style.backdropFilter = "blur(10px)";
-                sleepTimerMenuOption.style.border = "1px solid rgba(255, 255, 255, 0.3)";
-                sleepTimerMenuOption.style.borderRadius = "0.25rem";
-                sleepTimerMenuOption.style.padding = "0.5rem";
-                sleepTimerMenuOption.style.margin = "0.25rem";
-                sleepTimerMenuOption.style.fontSize = "12px";
-                sleepTimerMenuOption.style.fontWeight = "bold";
-                sleepTimerMenuOption.style.textAlign = "center";
-                sleepTimerMenuOption.style.cursor = "pointer";
-                sleepTimerMenuOption.style.lineHeight = "1.5";
-                sleepTimerMenuOption.style.minWidth = "250px";
-                sleepTimerMenuOption.style.color = "#fff";
+
+                const styles: Partial<CSSStyleDeclaration> = {
+                    backgroundColor: "rgba(255, 255, 255, 0.2)",
+                    backdropFilter: "blur(10px)",
+                    border: "1px solid rgba(255, 255, 255, 0.3)",
+                    borderRadius: "0.25rem",
+                    padding: "0.5rem",
+                    margin: "0.25rem",
+                    fontSize: "12px",
+                    fontWeight: "bold",
+                    textAlign: "center",
+                    cursor: "pointer",
+                    lineHeight: "1.5",
+                    minWidth: "250px",
+                    color: "#fff",
+                }
+
+                Object.assign(sleepTimerMenuOption.style, styles);
 
                 sleepTimerMenuOption.innerHTML = option.label;
                 sleepTimerMenuOption.addEventListener("click", (e) => {

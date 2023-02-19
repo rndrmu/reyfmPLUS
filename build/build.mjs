@@ -1,6 +1,5 @@
 #!/usr/bin/node
 
-import uglifyjs from 'uglify-js';
 import PackageJSON from '../package.json' assert { type: "json" };
 import fs from 'fs';
 
