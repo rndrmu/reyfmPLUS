@@ -1,4 +1,4 @@
-import { LogLevel, Notification, NotificationStyle, showNotification } from "@api/notification";
+import { LogLevel, showNotification } from "@api/notification";
 import Logger from "@utils/Logger";
 import definePlugin from "@utils/types";
 

@@ -9,24 +9,25 @@ export function createModal(title: string, content: string, buttons: Array<Modal
     // create modal
     const modal = document.createElement("div");
     modal.className = "modal";
-    modal.style.display = "block";
-    modal.style.position = "fixed";
-    modal.style.zIndex = "9999";
-    modal.style.left = "0";
-    modal.style.top = "0";
-    modal.style.width = "25%";
-    modal.style.height = "25%";
-    modal.style.overflow = "auto";
-    // glass effect
-    modal.style.backgroundColor = "rgba(22, 24, 25, 0.8)";
-    // flex container
-    modal.style.display = "flex";
-    modal.style.justifyContent = "center";
-    modal.style.alignItems = "center";
-    // modal content
-    modal.style.backdropFilter = "blur(10px)";
-    modal.style.borderRadius = "0.25rem";
-    modal.style.color = "#fff";
+
+    const modalStyle: Partial<CSSStyleDeclaration> = {
+        display: "block flex",
+        position: "fixed",
+        zIndex: "9999",
+        left: "0",
+        top: "0",
+        width: "25%",
+        height: "25%",
+        overflow: "auto",
+        backgroundColor: "rgba(22, 24, 25, 0.8)",
+        backdropFilter: "blur(10px)",
+        borderRadius: "0.25rem",
+        color: "#fff",
+        justifyContent: "center",
+        alignItems: "center"
+    }
+
+    Object.assign(modal.style, modalStyle);
     
 
     modal.innerHTML = `
@@ -65,19 +66,3 @@ export function createModal(title: string, content: string, buttons: Array<Modal
     });
 }
 
-const testModal = createModal("Test Modal", "This is a test modal", [
-    {
-        text: "Close",
-        type: "secondary",
-        onClick: () => {
-            console.log("Closed modal");
-        }
-    },
-    {
-        text: "Test",
-        type: "primary",
-        onClick: () => {
-            console.log("Tested modal");
-        }
-    }
-]);

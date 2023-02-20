@@ -13,6 +13,23 @@ export const showNotification = (title, message, persistent = false, logLevel: L
     // create notification
     const notification = document.createElement("div");
     notification.className = "fmplus notification";
+
+    const notificationStyle: Partial<CSSStyleDeclaration> = {
+        position: "fixed",
+        right: "0",
+        width: "fit-content",
+        maxWidth: "50%",
+        minWidth: "25rem",
+        margin: "0.5rem",
+        padding: "0.5rem",
+        backgroundColor: "rgba(255, 255, 255, 0.1)",
+        backdropFilter: "blur(10px)",
+        borderRadius: "0.25rem",
+        color: "#fff",
+        textAlign: "center",
+        zIndex: "9999"
+    }
+
     const existingNotifications = document.querySelectorAll(".fmplus.notification");
     if (existingNotifications.length > 0) {
         // get last notification
@@ -20,46 +37,43 @@ export const showNotification = (title, message, persistent = false, logLevel: L
         // get last notification's position
         const lastNotificationPosition = lastNotification.getBoundingClientRect();
         // set notification's position to be below the last notification
-        notification.style.top = `${lastNotificationPosition.bottom + 15}px`;
+        notificationStyle.top = `${lastNotificationPosition.top + lastNotificationPosition.height + 10}px`;
     } else {
         // no notifications exist, so set notification's position to be at the top
-        notification.style.top = "0";
+        notificationStyle.top = "0";
     }
-    notification.style.position = "fixed";
-    // top right corner
-    notification.style.right = "0";
-    // only take a small amount of space on the screen
-    notification.style.width = "fit-content";
-    notification.style.maxWidth = "50%";
-    notification.style.minWidth = "25rem";
-    notification.style.margin = "0.5rem";
+
     
-    notification.style.padding = "0.5rem";
-    // glassmorphism style
-    notification.style.backgroundColor = "rgba(255, 255, 255, 0.1)";
-    notification.style.backdropFilter = "blur(10px)";
-    notification.style.borderRadius = "0.25rem";
-    notification.style.color = "#fff";
-    notification.style.textAlign = "center";
-    notification.style.zIndex = "9999";
+
+    Object.assign(notification.style, notificationStyle);
+
     // create title
     const notificationTitle = document.createElement("h3");
-    // top left corner
     notificationTitle.className = "fmplus notification-title";
-    notificationTitle.style.top = "0";
-    notificationTitle.style.left = "0";
-    notificationTitle.style.margin = "0";
-    notificationTitle.style.padding = "0";
-    notificationTitle.style.fontSize = "1.5rem";
-    notificationTitle.style.fontWeight = "bold";
     notificationTitle.innerHTML = title;
+
+    const notificationTitleStyle: Partial<CSSStyleDeclaration> = {
+        top: "0",
+        left: "0",
+        margin: "0",
+        padding: "0",
+        fontSize: "1.5rem",
+        fontWeight: "bold"
+    }
+
+    Object.assign(notificationTitle.style, notificationTitleStyle);
+
     // create message
     const notificationMessage = document.createElement("p");
     notificationMessage.className = "fmplus notification-message";
-    // start left aligned (same as title)
-    notificationMessage.style.textAlign = "left";
-    notificationMessage.style.margin = "0";
-    notificationMessage.style.padding = "0";
+
+    const notificationMessageStyle: Partial<CSSStyleDeclaration> = {
+        textAlign: "left",
+        margin: "0",
+        padding: "0"
+    }
+
+    Object.assign(notificationMessage.style, notificationMessageStyle);
 
     notificationMessage.innerHTML = message;
     // append title and message to notification
@@ -118,7 +132,7 @@ export const showNotification = (title, message, persistent = false, logLevel: L
                 duration: 500,
                 easing: "ease-in-out"
             });
-            notification.style.top = `${notificationPosition.top - 65}px`;
+            notificationStyle.top = `${notificationPosition.top - 65}px`;
         });
     });
 
@@ -202,7 +216,7 @@ export const showToast = (message): HTMLDivElement => {
             notification.remove();
         }
         // get all toasts
-        const toasts = document.querySelectorAll(".fmplus.toast");
+        const toasts = document.querySelectorAll(".fmplus.toast") as NodeListOf<HTMLDivElement>;
         // get index of toast
         const index = Array.from(toasts).indexOf(notification);
         // get all toasts after the clicked toast
