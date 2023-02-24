@@ -1,6 +1,7 @@
 import { playStream } from "./api";
 import { destroyOriginalStream } from "./utils";
 import { rfmPlusState, WebpackedNuxt, stationMap, Station, StreamQuality, RfmChannel, RfmChannels, Plugin } from "@utils/types";
+import { NuxtStoreGetters } from "@api/index";
 // overwrite window object
 export const a = 1;
 
@@ -10,9 +11,11 @@ declare global {
             state: rfmPlusState;
             api: APIFunctions;
             plugins: Map<string, Plugin>;
+            nuxtStore: NuxtStoreGetters;
         },
         // just for typing, not used in production
         __NUXT__: WebpackedNuxt;
+        $nuxt: any; // TODO: type this :^)
 
     }
 };
@@ -22,6 +25,7 @@ type rfmPlus = {
     state: rfmPlusState;
     api: APIFunctions;
     plugins: Map<string, Plugin>;
+    nuxtStore: NuxtStoreGetters;
 };
 
 export const defaultState: rfmPlus = {
@@ -70,6 +74,8 @@ export const defaultState: rfmPlus = {
         }
     },
     plugins: new Map<string, Plugin>(),
+    nuxtStore: new NuxtStoreGetters()
+    
 }
 
 export interface APIFunctions {
