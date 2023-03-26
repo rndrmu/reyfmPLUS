@@ -67,6 +67,10 @@ export default definePlugin({
         const socket = new WebSocket("ws://localhost:8080");
         const lastHeartbeat = Date.now();
 
+        // create worker to send playstate updates concurrently
+
+
+
         socket.addEventListener("open", () => {
             logger.info("Socket connection established");
         });

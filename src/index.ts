@@ -1,9 +1,10 @@
-import { awaitElementVisible, chipCreator, openInSpotify, reyfmPlusMeta, destroyOriginalStream } from "./utils";
-import { playStateObserver, pathObserver, newPath } from "./observers";
+import { awaitElementVisible } from "@utils/index";
+import { chipCreator, openInSpotify, reyfmPlusMeta, destroyOriginalStream } from "./utils";
 import { defaultState } from "./consts";
 import Logger from "@utils/Logger";
-import { plugins } from "plugins";
-import observers from "@utils/observers";
+import { plugins } from "./plugins";
+import observers, { newPathFn } from "@utils/observers";
+import { injectPlayerControls } from "@core/index";
 
 // await for the page to load
 awaitElementVisible("div[data-v-733b83fc] > a > svg", (_) => {
@@ -32,14 +33,14 @@ function main() {
             logger.info(`Loading plugin: ${plugin.name}`);
             try {
                 // check if plugin has a dependent element
-                if (plugin.awaitElementVisible) {
+                if (plugin.injectTarget) {
                     // check if element is visible
-                    const isVisible = document.querySelector(plugin.awaitElementVisible);
+                    const isVisible = document.querySelector(plugin.injectTarget);
                     if (!isVisible) {
-                        logger.info(`Plugin ${plugin.name} has a dependent element ${plugin.awaitElementVisible} which has not been loaded yet. Waiting for it to load...`);
-                        awaitElementVisible(plugin.awaitElementVisible, plugin.entrypoint);
+                        logger.info(`Plugin ${plugin.name} has a dependent element ${plugin.injectTarget} which has not been loaded yet. Waiting for it to load...`);
+                        awaitElementVisible(plugin.injectTarget, plugin.entrypoint);
                     } else {
-                        logger.info(`Plugin ${plugin.name} has a dependent element ${plugin.awaitElementVisible} which has already been loaded. Loading plugin...`);
+                        logger.info(`Plugin ${plugin.name} has a dependent element ${plugin.injectTarget} which has already been loaded. Loading plugin...`);
                         plugin.entrypoint();
                     }
                 }
@@ -58,14 +59,11 @@ function main() {
     // add metadata footer so we know the script is running
     reyfmPlusMeta();
     // call immediately in case user is on a station page
-    newPath(window.location.pathname);
-
-    // check for url path changes
-    pathObserver(window.location.pathname, newPath);
+    newPathFn(window.location.pathname);
 
     // add spotify button
     //@ts-ignore
-    awaitElementVisible("a[data-v-5fde3039] > div.w-max > p.akira", (element) => {
+    awaitElementVisible("div.station-small", (element) => {
         const chip = element.parentElement;
         const chipBar = chip?.parentElement;
         const spotifyChip = chipCreator(element, "On Spotify", "#1db954", false, (e) => {
@@ -75,6 +73,11 @@ function main() {
 
         chipBar.appendChild(spotifyChip);
     });
+
+
+    logger.info("Injecting player controls");
+        injectPlayerControls();
+
 
 };
 

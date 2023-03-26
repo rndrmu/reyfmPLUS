@@ -5,10 +5,12 @@
         "rootDir": "./src/",
         "outDir": "./dist/pre/",
         "baseUrl": "./src/",
+        "moduleResolution": "node",
         "paths": {
             "@utils/*": ["./utils/*"],
             "@api/*": ["./api/*"],
             "@webpack": ["./webpack/*"],
+            "@core/*": ["./core/*"],
         }
     },
 }

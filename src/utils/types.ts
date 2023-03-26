@@ -214,7 +214,8 @@ export interface Plugin {
  * description: "A simple plugin that logs 'Hello world!' to the console",
  * version: "1.0.0",
  * entrypoint: () => console.log("Hello world!"),
- * pathConstraint: /^\/$/
+ * pathConstraint: /^\/$/ // Only load on the home page
+ * injectTarget: "#my-element" // Inject only if the element with id "my-element" is present
  * })
  */
 export default function definePlugin<P extends Plugin>(p: P & Record<string, any>) {

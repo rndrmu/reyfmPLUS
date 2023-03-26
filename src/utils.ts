@@ -12,15 +12,7 @@ export function chipCreator(element: HTMLElement, label: string, color: string, 
     return chip;
 };
 
-export function awaitElementVisible(selector, callback) {
-    new MutationObserver((mutations, observer) => {
-        const element = document.querySelectorAll(selector)[0];
-        if (element && element.offsetParent !== null) {
-            callback(element);
-            observer.disconnect();
-        } 
-    }).observe(document, { childList: true, subtree: true });
-}
+
 
 export function openInSpotify() {
     const title = document.querySelectorAll("p[data-v-5fde3039]")[0].textContent?.trim() 

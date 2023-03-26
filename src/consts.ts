@@ -11,7 +11,6 @@ declare global {
             state: rfmPlusState;
             api: APIFunctions;
             plugins: Map<string, Plugin>;
-            nuxtStore: NuxtStoreGetters;
         },
         // just for typing, not used in production
         __NUXT__: WebpackedNuxt;
@@ -25,13 +24,14 @@ type rfmPlus = {
     state: rfmPlusState;
     api: APIFunctions;
     plugins: Map<string, Plugin>;
-    nuxtStore: NuxtStoreGetters;
 };
 
 export const defaultState: rfmPlus = {
     state: {
         bassBoostActive: false,
         bassBoostLevel: 0,
+        audioContext: undefined,
+        audioPlayer: undefined,
     },
     api: {
         getStation: async (station: string) => {
@@ -74,7 +74,6 @@ export const defaultState: rfmPlus = {
         }
     },
     plugins: new Map<string, Plugin>(),
-    nuxtStore: new NuxtStoreGetters()
     
 }
 

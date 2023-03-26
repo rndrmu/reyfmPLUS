@@ -8,33 +8,44 @@
  */
 
 import Logger from "@utils/Logger";
-import { PLAY_BUTTON_SELECTOR } from "@utils/consts";
 import { Observer } from "./types";
-import { awaitElementVisible } from "utils";
-const logger = new Logger("Observer");
+const logger = new Logger("core/Observer");
+
+
+export function awaitElementVisible(selector, callback) {
+    new MutationObserver((mutations, observer) => {
+        const element = document.querySelectorAll(selector)[0];
+        if (element && element.offsetParent !== null) {
+            callback(element);
+            observer.disconnect();
+        } 
+    }).observe(document, { childList: true, subtree: true });
+}
+
 
 const pathObserver = () => {
     // check for url path changes
-    let pathName = window.location.pathname;
-    new MutationObserver((mutations, observer) => {
-        if (window.location.pathname !== pathName) {
-            pathName = window.location.pathname;
-            newPath(pathName);
-        }
-    }).observe(document, { childList: true, subtree: true });
-};
-
-const playButtonClicked = () => {
-    // path: "div.inset-center > div.buttonShine"
-    document.querySelector(PLAY_BUTTON_SELECTOR).addEventListener("click", () => {
-        clickedPB();
+    window.addEventListener("popstate", () => {
+        logger.log("Path changed to " + window.location.pathname);
+        newPathFn(window.location.pathname);
     });
 };
+
+const volumeObserver = () => {
+    // react to volume changes
+    window.$nuxt.$watch(() => window.$nuxt.$store.state.player.volume, (newVal) => {
+        if (window.rfmPlus.state.audioPlayer) {
+            window.rfmPlus.state.audioPlayer.volume = (newVal / 100)
+        }
+    })
+}
+
+
 
 /**
  * Function called when the user changes the url path.
  */
-const newPath = (pathName) => {
+export const newPathFn = (pathName) => {
     // check if the new path is the one we want
     logger.log("New path: " + pathName);
     // get plugins
@@ -43,7 +54,7 @@ const newPath = (pathName) => {
     for (const [, plugin] of plugins) {
         if (plugin.pathConstraint) {
             // check if the path matches the path constraint
-            if (pathName.match(plugin.pathConstraint)) {
+            if (pathName.match(plugin.pathConstraint)  && plugin.enabled /* check if the plugin is enabled */ ) {
                 // path matches, so we can enable the plugin
                 logger.log("Enabling plugin: " + plugin.name);
                 if (plugin.injectTarget) {
@@ -59,25 +70,6 @@ const newPath = (pathName) => {
     }
 
 
-/**
- * Function that is called when the user clicks the play button.
- */
-const clickedPB = () => {
-    const sitePlayer = window.__NUXT__.state.player.audio;
-    const rfmPlusPlayer = window.rfmPlus.state.audioPlayer;
-    if (sitePlayer && rfmPlusPlayer) {
-        // player is paused
-        logger.log("Resuming");
-        window.__NUXT__.state.player.audio = rfmPlusPlayer;
-        window.__NUXT__.state.player.playing = true;
-    } else if (!sitePlayer && rfmPlusPlayer) {
-        logger.log("Pausing");
-        sitePlayer?.pause();
-        window.__NUXT__.state.player.audio = null;
-        window.__NUXT__.state.player.playing = false;
-        rfmPlusPlayer.pause(); // for safety's sake
-    }
-}
 
 
 
@@ -88,8 +80,8 @@ export default <Observer[]>[
         enabled: true
     },
     {
-        name: "playButtonClicked",
-        associatedFn: playButtonClicked,
+        name: "volumeObserver",
+        associatedFn: volumeObserver,
         enabled: true
     }
 ]
@@ -132,3 +124,5 @@ export class ObserverManager {
         observer.associatedFn = fn;
     }
 }
+
+
